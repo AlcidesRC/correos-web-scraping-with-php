@@ -36,4 +36,4 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Define the working directory
 
-WORKDIR /code
+WORKDIR /app

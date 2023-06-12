@@ -7,10 +7,9 @@ services:
             dockerfile: ./Dockerfile
         restart: unless-stopped
         tty: true
-        working_dir: /code
+        working_dir: /app
         volumes:
-            - ./src:/code
-            - ./output:/output
+            - ./src:/app
             - ./usr/local/etc/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
             - ./usr/shared/healthchecks/php-fpm.sh:/usr/shared/healthchecks/php-fpm.sh:ro
         healthcheck:

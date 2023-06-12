@@ -1,9 +1,9 @@
 {
-    "name": "fonil/dockerized-php-cli",
+    "name": "alcidesrc/correos-web-scrapping-with-php",
     "type": "project",
     "license": "MIT",
-    "description": "A skeleton to build containerized PHP CLI microservices with Docker",
-    "keywords": ["skeleton", "php", "cli", "composer", "phpunit", "paratest", "infection", "phpinsights", "php-parallel-lint", "phpstan", "phpunit", "pcov", "bypass-finals"],
+    "description": "Web scrapping with PHP",
+    "keywords": ["correos", "scrapping", "php", "cli", "composer", "phpunit", "paratest", "infection", "phpinsights", "php-parallel-lint", "phpstan", "phpunit", "pcov", "bypass-finals"],
     "authors": [
         {
             "name": "Alcides Ramos",
@@ -11,10 +11,6 @@
             "homepage": "https://alcidesramos.com/"
         }
     ],
-    "support": {
-        "issues": "https://github.com/fonil/dockerized-php-cli/issues",
-        "source": "https://github.com/fonil/dockerized-php-cli"
-    },
     "require": {
         "php": "^8.1",
         "caseyamcl/guzzle_retry_middleware": "^2.8",

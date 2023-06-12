@@ -18,7 +18,7 @@ final class ScraperTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->config                 = include('/code/config/app.php');
+        $this->config                 = include(__DIR__ . '/../../../config/app.php');
         $this->config['concurrency']  = 1;
         $this->config['postal-codes'] = [1, 10];
     }
@@ -50,9 +50,7 @@ final class ScraperTest extends TestCase
     {
         $loadFixture = static function (int $province): array {
             return unserialize(
-                file_get_contents(
-                    sprintf('/code/tests/Fixture/Cli/ScraperTest/province-%d.serialized', $province)
-                )
+                file_get_contents(__DIR__ . sprintf('/../../Fixture/Cli/ScraperTest/province-%d.serialized', $province))
             );
         };
 

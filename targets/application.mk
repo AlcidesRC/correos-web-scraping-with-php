@@ -8,7 +8,7 @@ run: require-as-number-province ## Application: executes the main script
 	$(call runDockerComposeExec,php ./bootstrap/app.php $(province) $(min) $(max))
 
 combine-csv-files: ## Application: combines all CSV files into one
-	$(shell awk '(NR == 1) || (FNR > 1)' ./output/province-*.csv > ./all-postal-codes.csv)
+	$(shell awk '(NR == 1) || (FNR > 1)' ./src/output/province-*.csv > ./all-postal-codes.csv)
 	@echo ""
 	@echo " 📦  ${CYAN}File generated at [ ${WHITE}./all-postal-codes.csv${CYAN} ]${RESET}"
 	@echo ""
