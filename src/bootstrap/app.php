@@ -26,13 +26,12 @@ $province = $argc >= 2 ? (int) $argv[1] : $config['provinces'][0];
 $min      = $argc >= 3 ? (int) $argv[2] : $config['postal-codes'][0];
 $max      = $argc >= 4 ? (int) $argv[3] : $config['postal-codes'][1];
 
-$printLine(sprintf(
-    '- Province [ %d ] - Postal Codes [ %d..%d ] - Concurrent Requests [ %d ]...',
-    $province,
-    $min,
-    $max,
-    $config['concurrency']
-));
+$line = match($config['mode']) {
+    Scraper::MODE_CONCURRENT => sprintf('- Province [ %d ] - Postal Codes [ %d..%d ] - Concurrent Requests [ %d ]...', $province, $min, $max, $config['concurrency']),
+    Scraper::MODE_SEQUENTIAL => sprintf('- Province [ %d ] - Postal Codes [ %d..%d ] - Sequential Requests...', $province, $min, $max),
+};
+
+$printLine($line);
 
 CsvFile::saveTo(
     filepath: sprintf($config['output'], $province),

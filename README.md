@@ -4,7 +4,7 @@
 
 ## Summary
 
-This repository contains the [Sociedad Estatal de Correos y Telégrafos](https://www.correos.es/) web scraper which retrieves the Spanish postcodes. 
+This repository contains the [Sociedad Estatal de Correos y Telégrafos](https://www.correos.es/) web scraper which retrieves the Spanish postcodes.
 
 Application is built using **PHP + Guzzle + concurrent requests** to improve the performance.
 
@@ -79,7 +79,7 @@ HTTP 200 OK
 
 This application will accept a province ID as input, and using the previous endpoint, will check all possible postcodes and store into a CSV file the information from valid ones.
 
-Those CSV files, one per province, will be placed at `/output/province-XX.csv` for easy processing. 
+Those CSV files, one per province, will be placed at `./output/province-XX.csv` for easy processing.
 
 > There is a special *Makefile* command for [combining all CSV files](#Combining-CSV-Files) into single one for mass processing.
 
@@ -99,7 +99,7 @@ $ git clone git@github.com:alcidesrc/correos-web-scraping-with-php.git .
 ```bash
 ~/path/to/my-new-project$ make build
 
-[+] Building 48.8s (15/15) FINISHED                                                                                                                                           
+[+] Building 48.8s (15/15) FINISHED
  => [internal] load build definition from Dockerfile                                                                      0.0s
  => => transferring dockerfile: 876B                                                                                      0.0s
  => [internal] load .dockerignore                                                                                         0.0s
@@ -147,13 +147,28 @@ $ git clone git@github.com:alcidesrc/correos-web-scraping-with-php.git .
 
 #### Executing the application
 
-```bash
-~/path/to/my-new-project$ make run province=52
+##### Sequential Mode
 
-- Province [ 52 ] - Postal Codes [ 1..999 ] - Concurrent Requests [ 18 ]...
-- Elapsed time: xxxxx
-- Consumed memory: xxxxx
-- CSV generated at: /output/province-52.csv
+```bash
+~/path/to/my-new-project$ make run province=52 min=1 max=15
+
+- Province [ 52 ] - Postal Codes [ 1..15 ] - Sequential Requests...
+- Elapsed time: 00:00:54.1193
+- Consumed memory: 1.19 MB
+- CSV generated at: /code/config/../output/province-52.csv
+
+ ✅  Task done!
+```
+
+##### Concurrent Mode
+
+```bash
+~/path/to/my-new-project$ make run province=52 min=1 max=15
+
+- Province [ 52 ] - Postal Codes [ 1..15 ] - Concurrent Requests [ 10 ]...
+- Elapsed time: 00:00:17.7500
+- Consumed memory: 1.22 MB
+- CSV generated at: /code/config/../output/province-52.csv
 
  ✅  Task done!
 ```
@@ -176,7 +191,7 @@ $ git clone git@github.com:alcidesrc/correos-web-scraping-with-php.git .
 PHPUnit 9.6.8 by Sebastian Bergmann and contributors.
 
 Runtime:       PHP 8.1.19 with PCOV 1.0.11
-Configuration: /code/phpunit.xml
+Configuration: /app/phpunit.xml
 Random Seed:   1686250378
 
 ....................                                              20 / 20 (100%)
@@ -188,11 +203,11 @@ OK (20 tests, 22 assertions)
 Generating code coverage report in HTML format ... done [00:00.035]
 
 
-Code Coverage Report:     
-  2023-06-08 18:53:23     
-                          
- Summary:                 
-  Classes: 100.00% (6/6)  
+Code Coverage Report:
+  2023-06-08 18:53:23
+
+ Summary:
+  Classes: 100.00% (6/6)
   Methods: 100.00% (11/11)
   Lines:   100.00% (65/65)
 

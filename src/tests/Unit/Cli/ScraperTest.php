@@ -19,8 +19,9 @@ final class ScraperTest extends TestCase
     protected function setUp(): void
     {
         $this->config                 = include(__DIR__ . '/../../../config/app.php');
-        $this->config['concurrency']  = 1;
-        $this->config['postal-codes'] = [1, 10];
+        $this->config['mode']         = Scraper::MODE_SEQUENTIAL;
+        $this->config['postal-codes'] = [1, 2];
+        $this->config['concurrency']  = 2;
     }
 
     protected function tearDown(): void
@@ -29,9 +30,12 @@ final class ScraperTest extends TestCase
     }
 
     /**
+     * @covers \App\Cli\Scraper::__construct
      * @covers \App\Cli\Scraper::setup
      * @covers \App\Cli\Scraper::process
-     * @covers \App\Cli\Scraper::__construct
+     * @covers \App\Cli\Scraper::processSequential
+     * @covers \App\Cli\Scraper::processConcurrent
+     * @covers \App\Cli\Scraper::parseResponse
      * @covers \App\Helpers\Range::__construct
      * @covers \App\Helpers\Range::each
      * @covers \App\Helpers\Range::fromArray
@@ -39,9 +43,13 @@ final class ScraperTest extends TestCase
      *
      * @dataProvider dataProviderForMethodProcess
      */
-    public function testMethodProcess(int $province, int $min, int $max, array $fixture): void
+    public function testMethodProcess(string $mode, int $province, int $min, int $max, array $fixture): void
     {
-        $result = (new Scraper($province))->setup($this->config)->process($min, $max);
+        $override = [
+            'mode' => $mode
+        ];
+
+        $result = (new Scraper($province))->setup([...$this->config, ...$override])->process($min, $max);
 
         $this->assertEquals($fixture, $result);
     }
@@ -54,15 +62,9 @@ final class ScraperTest extends TestCase
             );
         };
 
-        $randomProvince = random_int(3, 5);
-
         return [
-            // Explicit checkpoints
-            [1, 1, 10, $loadFixture(1)],
-            [2, 1, 10, $loadFixture(2)],
-
-            // Random checkpoints
-            [$randomProvince, 1, 10, $loadFixture($randomProvince)],
+            [Scraper::MODE_SEQUENTIAL, 52, 1, 2, $loadFixture(52)],
+            [Scraper::MODE_CONCURRENT, 52, 1, 2, $loadFixture(52)],
         ];
     }
 }

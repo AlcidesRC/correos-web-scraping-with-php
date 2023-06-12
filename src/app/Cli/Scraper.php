@@ -19,7 +19,13 @@ use GuzzleRetry\GuzzleRetryMiddleware;
 
 final class Scraper
 {
-    private readonly Client $client;
+    public const MODE_SEQUENTIAL = 'sequential';
+    public const MODE_CONCURRENT = 'concurrent';
+
+    private readonly string $mode;
+    private readonly string $endpoint;
+    private readonly Client $clientSync;
+    private readonly Client $clientAsync;
     private readonly int $concurrency;
     private array $result;
 
@@ -34,14 +40,29 @@ final class Scraper
         $stack->push(GuzzleRetryMiddleware::factory());
 
         $extra = [
-            'handler' => $stack,
-            RequestOptions::HEADERS => [
+            RequestOptions::SYNCHRONOUS => true,
+            RequestOptions::HEADERS     => [
                 'User-Agent' => UserAgents::getRandom(),
-            ]
+                'Referer'    => 'https://www.correos.es/',
+            ],
+            'handler' => $stack,
         ];
 
-        $this->client      = new Client(array_merge($config['guzzle_client'], $extra));
+        $extraSync = [
+            RequestOptions::SYNCHRONOUS => true,
+        ];
+
+        $extraAsync = [
+            RequestOptions::SYNCHRONOUS => false,
+        ];
+
+        $this->clientSync  = new Client([...$config['guzzle_client'], ...$extra + $extraSync]);
+        $this->clientAsync = new Client([...$config['guzzle_client'], ...$extra + $extraAsync]);
+
+        $this->endpoint    = $config['endpoint_pattern'];
         $this->concurrency = $config['concurrency'];
+        $this->mode        = $config['mode'];
+
         $this->result      = [];
 
         return $this;
@@ -49,27 +70,38 @@ final class Scraper
 
     public function process(int $min, int $max): array
     {
+        match($this->mode) {
+            Scraper::MODE_CONCURRENT => $this->processConcurrent($min, $max),
+            Scraper::MODE_SEQUENTIAL => $this->processSequential($min, $max),
+        };
+
+        array_multisort(array_column($this->result, 'text'), SORT_ASC, $this->result);
+
+        return $this->result;
+    }
+
+    private function processConcurrent(int $min, int $max): void
+    {
         $postalCodes = Range::fromArray([$min, $max])->each(function (int $entry) {
             return sprintf('%02d%03d', $this->province, $entry);
         });
 
         $requestsGenerator = function (array $postalCodes) {
             foreach ($postalCodes as $code) {
-                yield new Request('GET', "digital-services/searchengines/api/v1/suggestions?text=$code", [
-                    RequestOptions::HEADERS => ['User-Agent' => UserAgents::getRandom()],
+                yield new Request('GET', sprintf($this->endpoint, $code), [
+                    RequestOptions::HEADERS => [
+                        'User-Agent' => UserAgents::getRandom(),
+                        'Referer'    => 'https://www.correos.es/',
+                    ],
                 ]);
             }
         };
 
-        $pool = new Pool($this->client, $requestsGenerator($postalCodes), [
+        $pool = new Pool($this->clientAsync, $requestsGenerator($postalCodes), [
             'concurrency' => $this->concurrency,
 
             'fulfilled' => function (Response $response, $index) use ($postalCodes) {
-                $data = json_decode($response->getBody()->getContents(), true);
-
-                if (array_key_exists('suggestions', $data)) {
-                    $this->result = [...$this->result, ...$data['suggestions']];
-                }
+                $this->parseResponse($response);
             },
 
             'rejected' => function (ConnectException|RequestException $e) {
@@ -78,9 +110,30 @@ final class Scraper
         ]);
 
         $pool->promise()->wait();
+    }
 
-        array_multisort(array_column($this->result, 'text'), SORT_ASC, $this->result);
+    private function processSequential(int $min, int $max): void
+    {
+        $postalCodes = Range::fromArray([$min, $max])->each(function (int $entry) {
+            return sprintf('%02d%03d', $this->province, $entry);
+        });
 
-        return $this->result;
+        foreach ($postalCodes as $code) {
+            $response = $this->clientSync->request('GET', sprintf($this->endpoint, $code), [
+                'User-Agent' => UserAgents::getRandom(),
+                'Referer'    => 'https://www.correos.es/',
+            ]);
+
+            $this->parseResponse($response);
+        }
+    }
+
+    private function parseResponse(Response $response): void
+    {
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        if (array_key_exists('suggestions', $data)) {
+            $this->result = [...$this->result, ...$data['suggestions']];
+        }
     }
 }
