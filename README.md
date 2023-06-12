@@ -1,3 +1,5 @@
+[![Integration Tests](https://github.com/AlcidesRC/correos-web-scraping-with-php/actions/workflows/integration-tests.yml/badge.svg)](https://github.com/AlcidesRC/correos-web-scraping-with-php/actions/workflows/integration-tests.yml)
+
 # Web Scraping with PHP
 
 [TOC]
