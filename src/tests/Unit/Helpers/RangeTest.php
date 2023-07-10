@@ -12,6 +12,11 @@ use PHPUnit\Framework\TestCase;
  * @internal
  *
  * @coversNothing
+ *
+ * @phpstan-type DataProviderEntry1 array{int, int, Range}
+ * @phpstan-type DataProviderEntry2 array{array<int, int>, Range}
+ * @phpstan-type DataProviderEntry3 array{array<int, int>, int, boolean}
+ * @phpstan-type DataProviderEntry4 array{array<int, int>, callable, non-empty-list<int>}
  */
 final class RangeTest extends TestCase
 {
@@ -27,6 +32,9 @@ final class RangeTest extends TestCase
         static::assertEquals($result, $expected);
     }
 
+    /**
+     * @return array<int, DataProviderEntry1>
+     */
     public function dataProviderForMethodConstruct(): array
     {
         return [
@@ -40,6 +48,8 @@ final class RangeTest extends TestCase
      * @covers \App\Helpers\Range::fromArray
      *
      * @dataProvider dataProviderForMethodFromArray
+     *
+     * @param array<int, int> $pair
      */
     public function testMethodFromArray(array $pair, Range $expected): void
     {
@@ -48,6 +58,9 @@ final class RangeTest extends TestCase
         static::assertEquals($result, $expected);
     }
 
+    /**
+     * @return array<int, DataProviderEntry2>
+     */
     public function dataProviderForMethodFromArray(): array
     {
         return [
@@ -62,6 +75,8 @@ final class RangeTest extends TestCase
      * @covers \App\Helpers\Range::contains
      *
      * @dataProvider dataProviderForMethodContains
+     *
+     * @param array<int, int> $pair
      */
     public function testMethodContains(array $pair, int $entry, bool $expected): void
     {
@@ -70,6 +85,9 @@ final class RangeTest extends TestCase
         static::assertEquals($result, $expected);
     }
 
+    /**
+     * @return array<int, DataProviderEntry3>
+     */
     public function dataProviderForMethodContains(): array
     {
         return [
@@ -84,6 +102,9 @@ final class RangeTest extends TestCase
      * @covers \App\Helpers\Range::each
      *
      * @dataProvider dataProviderForMethodEach
+     *
+     * @param array<int, int> $pair
+     * @param non-empty-list<int> $expected
      */
     public function testMethodEach(array $pair, Closure $closure, array $expected): void
     {
@@ -92,14 +113,17 @@ final class RangeTest extends TestCase
         static::assertEquals($result, $expected);
     }
 
+    /**
+     * @return array<int, DataProviderEntry4>
+     */
     public function dataProviderForMethodEach(): array
     {
-        $double = function (int $entry): int {
+        $closure = function (int $entry): int {
             return $entry * 2;
         };
 
         return [
-            [[1, 5], $double, [2, 4, 6, 8, 10]],
+            [[1, 5], $closure, [2, 4, 6, 8, 10]],
         ];
     }
 }

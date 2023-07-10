@@ -8,6 +8,9 @@ use Closure;
 
 final class Range
 {
+    /**
+     * @var array<int, int> $range
+     */
     private array $range;
 
     public function __construct(int $min, int $max)
@@ -21,6 +24,9 @@ final class Range
         $this->range = range($min, $max);
     }
 
+    /**
+     * @param array<int, int> $pair
+     */
     public static function fromArray(array $pair): self
     {
         [$min, $max] = $pair;

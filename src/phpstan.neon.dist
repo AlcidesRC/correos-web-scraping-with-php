@@ -6,3 +6,6 @@ parameters:
 	checkGenericClassInNonGenericObjectType: false
 	excludePaths:
 	ignoreErrors:
+		-
+			message: '#Method UnitTests\\Cli\\ScraperTest\:\:dataProviderForMethodProcess\(\) return type has no value type specified in iterable type array\.#'
+			path: tests/Unit/Cli/ScraperTest.php

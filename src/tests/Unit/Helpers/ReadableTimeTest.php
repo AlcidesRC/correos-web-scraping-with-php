@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
  * @internal
  *
  * @coversNothing
+ *
+ * @phpstan-type DataProviderEntry array{float, string}
  */
 final class ReadableTimeTest extends TestCase
 {
@@ -26,6 +28,9 @@ final class ReadableTimeTest extends TestCase
         static::assertEquals($result, $expected);
     }
 
+    /**
+     * @return array<int, DataProviderEntry>
+     */
     public function dataProviderForMethodConvert(): array
     {
         return [

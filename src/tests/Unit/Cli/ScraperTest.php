@@ -11,9 +11,20 @@ use PHPUnit\Framework\TestCase;
  * @internal
  *
  * @coversNothing
+ *
+ * @phpstan-type DataProviderEntry array{
+ *      string,
+ *      int,
+ *      int,
+ *      int,
+ *      array|array<int, array{"nombre": string, "latitude": float, "longitude": float}>
+ * }
  */
 final class ScraperTest extends TestCase
 {
+    /**
+     * @var array<string, array<int, int>|int|string> $config
+     */
     private array $config;
 
     protected function setUp(): void
@@ -42,6 +53,8 @@ final class ScraperTest extends TestCase
      * @covers \App\Http\UserAgents::getRandom
      *
      * @dataProvider dataProviderForMethodProcess
+     *
+     * @param array<int, array{"text": string, "longitude": float, "latitude": float}> $fixture
      */
     public function testMethodProcess(string $mode, int $province, int $min, int $max, array $fixture): void
     {
@@ -54,12 +67,17 @@ final class ScraperTest extends TestCase
         $this->assertEquals($fixture, $result);
     }
 
+    /**
+     * @return array<int, DataProviderEntry>
+     */
     public function dataProviderForMethodProcess(): array
     {
         $loadFixture = static function (int $province): array {
-            return unserialize(
-                file_get_contents(__DIR__ . sprintf('/../../Fixture/Cli/ScraperTest/province-%d.serialized', $province))
+            $contents = (string) file_get_contents(
+                __DIR__ . sprintf('/../../Fixture/Cli/ScraperTest/province-%d.serialized', $province)
             );
+
+            return (array) unserialize($contents);
         };
 
         return [

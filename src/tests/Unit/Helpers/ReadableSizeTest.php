@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
  * @internal
  *
  * @coversNothing
+ *
+ * @phpstan-type DataProviderEntry array{int, string}
  */
 final class ReadableSizeTest extends TestCase
 {
@@ -26,6 +28,9 @@ final class ReadableSizeTest extends TestCase
         static::assertEquals($result, $expected);
     }
 
+    /**
+     * @return array<int, DataProviderEntry>
+     */
     public function dataProviderForMethodConvert(): array
     {
         return [
