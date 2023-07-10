@@ -190,33 +190,33 @@ $ git clone git@github.com:alcidesrc/correos-web-scraping-with-php.git .
 ```bash
 ~/path/to/my-new-project$ make phpunit
 
-PHPUnit 9.6.8 by Sebastian Bergmann and contributors.
+PHPUnit 9.6.9 by Sebastian Bergmann and contributors.
 
 Runtime:       PHP 8.1.19 with PCOV 1.0.11
 Configuration: /app/phpunit.xml
-Random Seed:   1686250378
+Random Seed:   1688988633
 
-....................                                              20 / 20 (100%)
+...................                                               19 / 19 (100%)
 
-Time: 00:25.158, Memory: 14.00 MB
+Time: 00:17.681, Memory: 32.00 MB
 
-OK (20 tests, 22 assertions)
+OK (19 tests, 21 assertions)
 
-Generating code coverage report in HTML format ... done [00:00.035]
+Generating code coverage report in HTML format ... done [00:00.021]
 
 
-Code Coverage Report:
-  2023-06-08 18:53:23
-
- Summary:
-  Classes: 100.00% (6/6)
-  Methods: 100.00% (11/11)
-  Lines:   100.00% (65/65)
+Code Coverage Report:     
+  2023-07-10 11:30:51     
+                          
+ Summary:                 
+  Classes: 100.00% (6/6)  
+  Methods: 100.00% (14/14)
+  Lines:   100.00% (95/95)
 
 App\Cli\Scraper
-  Methods: 100.00% ( 3/ 3)   Lines: 100.00% ( 35/ 35)
+  Methods: 100.00% ( 6/ 6)   Lines: 100.00% ( 64/ 64)
 App\FileSystem\CsvFile
-  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  7/  7)
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  8/  8)
 App\Helpers\Range
   Methods: 100.00% ( 4/ 4)   Lines: 100.00% ( 11/ 11)
 App\Helpers\ReadableSize
@@ -226,7 +226,7 @@ App\Helpers\ReadableTime
 App\Http\UserAgents
   Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  1/  1)
 
-Generating code coverage report in PHPUnit XML format ... done [00:00.031]
+Generating code coverage report in PHPUnit XML format ... done [00:00.021]
 
  ✅  Task done!
 ```
