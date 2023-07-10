@@ -9,7 +9,7 @@ return [
 
     'exclude' => [
         './vendor',
-        './output',
+        './storage',
     ],
 
     'config' => [

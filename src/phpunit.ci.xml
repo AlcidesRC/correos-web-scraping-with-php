@@ -21,7 +21,7 @@
         <ini name="display_errors" value="1" />
         <ini name="error_reporting" value="-1" />
 
-        <env name="BASEPATH" value="." />
+        <env name="BASEPATH" value="./src" />
     </php>
 
     <extensions>
