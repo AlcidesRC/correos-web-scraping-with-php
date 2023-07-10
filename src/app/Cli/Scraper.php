@@ -70,7 +70,7 @@ final class Scraper
 
     public function process(int $min, int $max): array
     {
-        match($this->mode) {
+        match ($this->mode) {
             Scraper::MODE_CONCURRENT => $this->processConcurrent($min, $max),
             Scraper::MODE_SEQUENTIAL => $this->processSequential($min, $max),
         };
