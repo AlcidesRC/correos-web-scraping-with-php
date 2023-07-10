@@ -28,6 +28,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ runner.php }}
+        extensions: uopz
         coverage: pcov
 
     - name: Validate composer.json and composer.lock
@@ -45,5 +46,11 @@ jobs:
     - name: Install dependencies
       run: composer install --working-dir=./src --prefer-dist --no-progress
 
+    - name: Coding Standards
+      run: ./src/vendor/bin/phpcs --standard=./src/phpcs.xml ./src/app ./src/tests
+
+    - name: PHPStan
+      run: ./src/vendor/bin/phpstan analyse --configuration=./src/phpstan.neon.dist ./src/app ./src/tests
+
     - name: Integration Tests
-      run: ./src/vendor/bin/phpunit --configuration=./src/phpunit.xml
+      run: ./src/vendor/bin/phpunit --configuration=./src/phpunit.ci.xml
